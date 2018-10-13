@@ -1,0 +1,21 @@
+{
+  "name": "ethereum-contract-workflow",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "compile": "node scripts/compile.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "test"
+  ],
+  "author": "janmi",
+  "license": "ISC",
+  "dependencies": {
+    "solc": "^0.4.25"
+  },
+  "devDependencies": {
+    "fs-extra": "^7.0.0"
+  }
+}
