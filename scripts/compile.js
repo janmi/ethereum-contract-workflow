@@ -1,3 +1,4 @@
+// 编译合约
 const fs = require('fs-extra');
 const path = require('path');
 const solc = require('solc');

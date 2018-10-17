@@ -28,3 +28,5 @@ const web3 = new Web3(provider);
 
 	console.log('合约部署成功：', result.options.address);
 })();
+
+// 测试用例 1、获取到需要部署的合约账户；2、合约部署成功，条件为获取到部署成功后到地址
