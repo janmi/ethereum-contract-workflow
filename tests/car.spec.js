@@ -14,7 +14,7 @@ let accounts;
 let contract;
 const initialBrand = 'AUDI';
 
-describe('contract', () => {
+describe('Car Contract', () => {
   // 3. 每次跑单测时需要部署全新的合约实例，起到隔离的作用
 	beforeEach(async () => {
 		accounts = await web3.eth.getAccounts()
@@ -28,19 +28,19 @@ describe('contract', () => {
 	 // 4. 编写单元测试
 	it('deploy a contract', () => {
 		assert.ok(contract.options.address)
-	});
+	}); 
 
-	it('has initial brand', async () => {
-		const brand = await contract.methods.brand.call();
+	it('has a default brand', async () => {
+		const brand = await contract.methods.brand().call();
 		assert.equal(brand, initialBrand);
 	});
 
 	it('can change the brand', async () => {
-		const newBrand = 'BMW';
-		await contract.methods.setBrand(newBrand).send({ from: accounts[0], })
-		const brand = await contract.methods.brand.call();
+		const newBrand = 'BWM';
+		await contract.methods.setBrand(newBrand).send({ from: accounts[0]})
+		const brand = await contract.methods.brand().call();
 		assert.equal(brand, newBrand);
 	});
-})
+});
 
 
