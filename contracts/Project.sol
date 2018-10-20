@@ -51,6 +51,11 @@ contract Project {
     address[] public investors; // 投资人列表
     Payment[] public payments; // 资金支付列表
 
+    modifier ownerOnly () {
+        require(msg.sender == owner);
+        _;
+    }
+
     // 合约构造函数，要求传入所有合约的基本属性
     constructor(string _description, uint _minInvest, uint _maxInvest, uint _goal) public {
         // msg 可以理解为全局对象
@@ -73,8 +78,8 @@ contract Project {
         investors.push(msg.sender);
     }
     // 发起资金支出请求，要求传入资金支出的细节信息
-    function createPayment(string _description, uint _amount, address _receiver) public {
-        require(msg.sender == owner);
+    function createPayment(string _description, uint _amount, address _receiver) ownerOnly public {
+        // require(msg.sender == owner);
 
         Payment memory newPayment = Payment({
            description:_description,
@@ -112,9 +117,9 @@ contract Project {
         payment.voters.push(msg.sender);
     }
     // 完成资金支出，需要指定是哪笔支出，即调用该接口给资金接收方转账，不能重复转账，并且赞成票数超过投资人数量的 50%
-    function doPayment (uint index) public {
-        require(msg.sender == owner);
-        
+    function doPayment (uint index) ownerOnly public {
+        // require(msg.sender == owner);
+
         Payment storage payment = payments[index];
         require(!payment.completed);
         require(payment.voters.length > (investors.length / 2));
