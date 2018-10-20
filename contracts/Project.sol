@@ -51,6 +51,8 @@ contract Project {
     address[] public investors; // 投资人列表
     Payment[] public payments; // 资金支付列表
 
+    // modifier 的工作机制，"_" 占位符提示编译器把原函数的代码插入到 "_"，从而变成新的函数。
+
     modifier ownerOnly () {
         require(msg.sender == owner);
         _;
@@ -122,6 +124,7 @@ contract Project {
 
         Payment storage payment = payments[index];
         require(!payment.completed);
+        require(address(this).balance >= payment.amount);
         require(payment.voters.length > (investors.length / 2));
         
         payment.receiver.transfer(payment.amount);
