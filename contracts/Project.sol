@@ -1,6 +1,40 @@
 pragma solidity ^0.4.17;
 
+/**
+ * @title SafeMath
+ * @dev Math operations with safety checks that throw on error
+ */
+ // 防止数学运算溢出; 引入 SafeMath 机制来确保数学运算的安全，SafeMath 机制就是通过简单的检查确保常见的数学运算不出现预期之外的结果
+library SafeMath {
+    function mul(uint a, uint b) internal pure returns (uint) {
+        uint c = a * b;
+        assert(a == 0 || c / a == b);
+        return c;
+    }
+
+    function div(uint a, uint b) internal pure returns (uint) {
+        // assert(b > 0); // Solidity automatically throws when dividing by 0
+        uint c = a / b;
+        // assert(a == b * c + a % b); // There is no case in which this doesn't hold
+        return c;
+    }
+
+    function sub(uint a, uint b) internal pure returns (uint) {
+        assert(b <= a);
+        return a - b;
+    }
+
+    function add(uint a, uint b) internal pure returns (uint) {
+        uint c = a + b;
+        assert(c >= a);
+        return c;
+    }
+}
+
+
 contract Project {
+    using SafeMath for uint;
+
     struct Payment {
         string description;
         uint amount;
@@ -30,11 +64,18 @@ contract Project {
     function contribute() public payable {
         require(msg.value >= minInvest);
         require(msg.value <= maxInvest);
-        require(address(this).balance <= goal);
+        // require(address(this).balance <= goal);
+
+        uint newBalance = 0;
+        newBalance = address(this).balance.add(msg.value)
+        require(newBalance <= goal);
+
         investors.push(msg.sender);
     }
     // 发起资金支出请求，要求传入资金支出的细节信息
     function createPayment(string _description, uint _amount, address _receiver) public {
+        require(msg.sender == owner);
+
         Payment memory newPayment = Payment({
            description:_description,
            amount: _amount,
@@ -72,6 +113,8 @@ contract Project {
     }
     // 完成资金支出，需要指定是哪笔支出，即调用该接口给资金接收方转账，不能重复转账，并且赞成票数超过投资人数量的 50%
     function doPayment (uint index) public {
+        require(msg.sender == owner);
+        
         Payment storage payment = payments[index];
         require(!payment.completed);
         require(payment.voters.length > (investors.length / 2));
