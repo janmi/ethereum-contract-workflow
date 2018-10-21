@@ -40,7 +40,9 @@ contract Project {
         uint amount;
         address receiver;
         bool completed;
-        address[] voters;
+        // address[] voters;
+        mapping( address => bool) voters;
+        uint voterCount;
     }
     // 声明属性
     address public owner; // 项目所有者
@@ -48,7 +50,9 @@ contract Project {
     uint public minInvest; // 最小投资金额
     uint public maxInvest; // 最大投资金额
     uint public goal; // 融资上限
-    address[] public investors; // 投资人列表
+    // address[] public investors; // 投资人列表
+    uint public investorsCount; // 投资人计数
+    mapping (address => uint) public investors;
     Payment[] public payments; // 资金支付列表
 
     // modifier 的工作机制，"_" 占位符提示编译器把原函数的代码插入到 "_"，从而变成新的函数。
@@ -74,10 +78,12 @@ contract Project {
         // require(address(this).balance <= goal);
 
         uint newBalance = 0;
-        newBalance = address(this).balance.add(msg.value)
+        newBalance = address(this).balance.add(msg.value);
         require(newBalance <= goal);
 
-        investors.push(msg.sender);
+        // investors.push(msg.sender);
+        investors[msg.sender] = msg.value;
+        investorsCount += 1;
     }
     // 发起资金支出请求，要求传入资金支出的细节信息
     function createPayment(string _description, uint _amount, address _receiver) ownerOnly public {
@@ -88,7 +94,8 @@ contract Project {
            amount: _amount,
            receiver: _receiver,
            completed: false,
-           voters: new address[](0)
+           // voters: new address[](0)
+           voterCount: 0
         });
         
         payments.push(newPayment);
@@ -98,25 +105,32 @@ contract Project {
         Payment storage payment = payments[index];
         
         // must be investor to vote
-        bool isInvestor = false;
-        for (uint i = 0; i < investors.length; i++) {
-            isInvestor = investors[i] == msg.sender;
-            if(isInvestor) {
-                break;
-            }
-        }
-        require(isInvestor);
+        // bool isInvestor = false;
+        // for (uint i = 0; i < investors.length; i++) {
+        //     isInvestor = investors[i] == msg.sender;
+        //     if(isInvestor) {
+        //         break;
+        //     }
+        // }
+        // require(isInvestor);
         
+        require(investors[msg.sender] > 0);
+
+
         // can not vote twice
-        bool hasVoted = false;
-        for (uint j= 0; j < payment.voters.length; j++) {
-            hasVoted = payment.voters[j] == msg.sender;
-            if(hasVoted) {
-                break;
-            }
-        }
-        require(!hasVoted);
-        payment.voters.push(msg.sender);
+        // bool hasVoted = false;
+        // for (uint j= 0; j < payment.voters.length; j++) {
+        //     hasVoted = payment.voters[j] == msg.sender;
+        //     if(hasVoted) {
+        //         break;
+        //     }
+        // }
+        // require(!hasVoted);
+        // payment.voters.push(msg.sender);
+
+        require(!payment.voters[msg.sender]);
+        payment.voters[msg.sender] = true;
+        payment.voterCount += 1;
     }
     // 完成资金支出，需要指定是哪笔支出，即调用该接口给资金接收方转账，不能重复转账，并且赞成票数超过投资人数量的 50%
     function doPayment (uint index) ownerOnly public {
@@ -125,7 +139,8 @@ contract Project {
         Payment storage payment = payments[index];
         require(!payment.completed);
         require(address(this).balance >= payment.amount);
-        require(payment.voters.length > (investors.length / 2));
+        // require(payment.voters.length > (investors.length / 2));
+        require(payment.voterCount > (investorsCount / 2));
         
         payment.receiver.transfer(payment.amount);
         payment.completed = true;
