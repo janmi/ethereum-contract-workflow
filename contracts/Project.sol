@@ -1,5 +1,19 @@
 pragma solidity ^0.4.17;
 
+contract ProjectList {
+    using SafeMath for uint;
+    address [] public projects;
+
+    function createProject(string _description, uint _minInvest, uint _maxInvest, uint _goal) public {
+        address newProject = new Project(_description, _minInvest, _maxInvest, _goal, msg.sender)
+        projects.push(newProject)
+    }
+
+    function getProject () public view returns(address[]) {
+        return projects;
+    }
+}
+
 /**
  * @title SafeMath
  * @dev Math operations with safety checks that throw on error
@@ -63,13 +77,14 @@ contract Project {
     }
 
     // 合约构造函数，要求传入所有合约的基本属性
-    constructor(string _description, uint _minInvest, uint _maxInvest, uint _goal) public {
+    constructor(string _description, uint _minInvest, uint _maxInvest, uint _goal, address _owner) public {
         // msg 可以理解为全局对象
         owner = msg.sender;
         description = _description;
         minInvest = _minInvest;
         maxInvest = _maxInvest;
         goal = _goal;
+        owner = _owner;
     }
     // 参与项目投资的接口，投资人调用该接口时要求发送满足条件的资金，并且要求没有达到募资上线，这是所有合约接口中标记为 payable 的接口，即接受用户在交易中发送 ETH
     function contribute() public payable {
