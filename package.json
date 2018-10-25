@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "nuxt",
     "compile": "node scripts/compile.js",
     "deploy": "node scripts/deploy.js",
     "test": "mocha tests/"
@@ -15,8 +16,11 @@
   "license": "ISC",
   "dependencies": {
     "bignumber.js": "^7.2.1",
+    "element-ui": "^2.4.8",
     "ganache-cli": "^6.1.0",
-    "solc": "^0.4.25"
+    "nuxt": "^2.2.0",
+    "solc": "^0.4.25",
+    "vue": "^2.5.17"
   },
   "devDependencies": {
     "fs-extra": "^7.0.0",
