@@ -4,7 +4,7 @@ module.exports = {
 		meta: [
 			{ charset: 'utf-8' },
 			{ name: 'viewport', content: 'width=device-width, initial-scale=1'},
-			{ hid: 'description', name: 'description', content: '基于以太坊智能合约开发的众筹 DApp' },\
+			{ hid: 'description', name: 'description', content: '基于以太坊智能合约开发的众筹 DApp' },
 		]
 	},
 	css: [{ src: 'element-ui/lib/theme-chalk/index.css' }],
@@ -27,6 +27,6 @@ module.exports = {
 				]
 			]
 		},
-		vendor: ['element-ui']
+		// vendor: ['element-ui']
 	},
 };
