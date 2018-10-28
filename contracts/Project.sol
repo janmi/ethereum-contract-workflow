@@ -9,7 +9,7 @@ contract ProjectList {
         projects.push(newProject);
     }
 
-    function getProject () public view returns(address[]) {
+    function getProject () public view returnss(address[]) {
         return projects;
     }
 }
@@ -160,4 +160,18 @@ contract Project {
         payment.receiver.transfer(payment.amount);
         payment.completed = true;
     }
+
+    // 获取项目摘要
+    function getSummary () public view returns (string, uint, uint, uint, uint, uint, uint, address) {
+        return (
+            description,
+            minInvest,
+            maxInvest,
+            goal,
+            address(this).balance,
+            investorsCount,
+            payments.length,
+            owner
+        );
+    } 
 }
