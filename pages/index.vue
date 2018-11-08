@@ -43,25 +43,32 @@ import web3 from '../libs/web3'
 import Project from '../libs/project'
 import ProjectList from '../libs/ProjectList'
 import InfoBlock from '../components/InfoBlock'
-
 export default {
 	components: { 'info-block': InfoBlock },
 	async asyncData () {
 		const addressList = await ProjectList.methods.getProject().call()
+    let summaryList = []
+    const ret = await Project(addressList[0]).methods.getSummary().call()
 
-		const summaryList = await Promise.all(addressList.map( address  => {
-			Project(address).methods.getSummary().call()
-		}));
+    summaryList = Object.values(ret)
 
+		// Promise.all(addressList.map( address  => {
+		// 	Project(address).methods.getSummary().call()
+		// })).then(ret => {
+  //     console.log(ret)
+  //     summaryList.push(ret)
+  //   })
+    console.log(summaryList)
+    // console.log(addressList)
 		const projects = addressList.map((address, i) => {
 			const [description, minInvest, maxInvest, goal, balance, investorCount, paymentCount, owner] = Object.values(summaryList[i])
 			return {
 				address,
 				description,
 				minInvest: web3.utils.fromWei(minInvest, 'ether'),
-				maxInvest: web3.utils.from(maxInvest, 'ether'),
-				goal: web3.utils.from(goal, 'ether'),
-				balance: web3.utils.from(balance, 'ether'),
+				maxInvest: web3.utils.fromWei(maxInvest, 'ether'),
+				goal: web3.utils.fromWei(goal, 'ether'),
+				balance: web3.utils.fromWei(balance, 'ether'),
 				progress: Math.ceil(balance / goal * 100),
 				investorCount,
 				paymentCount,
@@ -69,11 +76,12 @@ export default {
 			}
 		}).reverse();
 
-		console.log(projects);
+		// console.log(projects);
     return { projects };
 	}
 }
 </script>
+
 <style lang="less">
 .project-card {
   margin-bottom: 24px;

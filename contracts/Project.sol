@@ -9,7 +9,7 @@ contract ProjectList {
         projects.push(newProject);
     }
 
-    function getProject () public view returnss(address[]) {
+    function getProject () public view returns(address[]) {
         return projects;
     }
 }

@@ -58,6 +58,13 @@ describe('Perject contract', () => {
 		assert.equal(goal, 1000000);
 	});
 
+	it('get getSummary', async () => {
+		const ret = await project.methods.getSummary().call()
+		console.log(ret)
+		assert.ok(!!ret)
+	})
+
+
 	it ('should allow investor to contribute', async () => {
 		const investor = accounts[1];
 		await project.methods.contribute().send({
