@@ -7,8 +7,9 @@
   				<el-card class="project-card">
   					<div class="clearfix" slot="header">
   						<strong>{{project.description}}</strong>
-  						<el-button></el-button>
-  						<nuxt-link :to="'/projects/' + project.address">查看详情</nuxt-link>
+  						<el-button style="float: right; padding: 3px 0" type="text">
+                <nuxt-link :to="'/projects/' + project.address">查看详情</nuxt-link>
+              </el-button>
   					</div>
   					<div class="progress-container">
   						<el-progress :text-inside="true" :stroke-width="18" :percentage="project.progress"></el-progress>
@@ -48,9 +49,9 @@ export default {
 	async asyncData () {
 		const addressList = await ProjectList.methods.getProject().call()
     let summaryList = []
+    console.log(addressList)
     const ret = await Project(addressList[0]).methods.getSummary().call()
-
-    summaryList = Object.values(ret)
+    summaryList.push(Object.values(ret))
 
 		// Promise.all(addressList.map( address  => {
 		// 	Project(address).methods.getSummary().call()
@@ -59,9 +60,8 @@ export default {
   //     summaryList.push(ret)
   //   })
     console.log(summaryList)
-    // console.log(addressList)
 		const projects = addressList.map((address, i) => {
-			const [description, minInvest, maxInvest, goal, balance, investorCount, paymentCount, owner] = Object.values(summaryList[i])
+			const [ description, minInvest, maxInvest, goal, balance, investorCount, paymentCount, owner ] = Object.values(summaryList[i])
 			return {
 				address,
 				description,
@@ -76,7 +76,6 @@ export default {
 			}
 		}).reverse();
 
-		// console.log(projects);
     return { projects };
 	}
 }
